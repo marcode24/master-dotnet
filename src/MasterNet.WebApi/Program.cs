@@ -1,8 +1,10 @@
 using MasterNet.Application;
+using MasterNet.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication();
+builder.Services.AddPersistence(builder.Configuration);
 
 builder.Services.AddControllers();
 
