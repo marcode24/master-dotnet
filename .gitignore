@@ -374,3 +374,4 @@ containers/
 
 # Ignore data files created by ef core
 *.db
+*.db-*
