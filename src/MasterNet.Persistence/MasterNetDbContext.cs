@@ -10,7 +10,7 @@ namespace MasterNet.Persistence;
 
 public class MasterNetDbContext : IdentityDbContext<AppUser>
 {
-  public MasterNetDbContext(DbContextOptions options) : base(options) { }
+  public MasterNetDbContext(DbContextOptions<MasterNetDbContext> options) : base(options) {}
   public DbSet<Curso> Cursos { get; set; }
   public DbSet<Instructor> Instructores { get; set; }
   public DbSet<Precio> Precios { get; set; }
