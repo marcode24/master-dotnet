@@ -1,11 +1,14 @@
 using Bogus;
 using MasterNet.Domain;
+using MasterNet.Persistence.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace MasterNet.Persistence;
 
-public class MasterNetDbContext : DbContext
+public class MasterNetDbContext : IdentityDbContext<AppUser>
 {
   public DbSet<Curso> Cursos { get; set; }
   public DbSet<Instructor> Instructores { get; set; }
@@ -98,9 +101,123 @@ public class MasterNetDbContext : DbContext
 
     modelBuilder.Entity<Instructor>()
       .HasData(DataMaster().Item3);
+
+    CargarDataSeguridad(modelBuilder);
   }
 
-  public Tuple<Curso[], Precio[], Instructor[]> DataMaster()
+  private void CargarDataSeguridad(ModelBuilder modelBuilder)
+  {
+    var adminId = Guid.NewGuid().ToString();
+    var clientId = Guid.NewGuid().ToString();
+
+    modelBuilder.Entity<IdentityRole>()
+      .HasData(
+        new IdentityRole {
+          Id = adminId,
+          Name = CustomRoles.ADMIN,
+          NormalizedName = CustomRoles.ADMIN
+        }
+      );
+
+    modelBuilder.Entity<IdentityRole>()
+      .HasData(
+        new IdentityRole {
+          Id = clientId,
+          Name = CustomRoles.CLIENTE,
+          NormalizedName = CustomRoles.CLIENTE,
+        }
+      );
+
+    modelBuilder.Entity<IdentityRoleClaim<string>>()
+      .HasData(
+        new IdentityRoleClaim<string> {
+          Id = 1,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.CURSO_READ,
+          RoleId = adminId,
+        },
+        new IdentityRoleClaim<string> {
+          Id = 2,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.CURSO_UPDATE,
+          RoleId = adminId,
+        },
+        new IdentityRoleClaim<string> {
+          Id = 3,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.CURSO_WRITE,
+          RoleId = adminId,
+        },
+        new IdentityRoleClaim<string> {
+          Id = 4,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.CURSO_DELETE,
+          RoleId = adminId,
+        },
+        new IdentityRoleClaim<string> {
+          Id = 5,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.INSTRUCTOR_CREATE,
+          RoleId = adminId,
+        },
+        new IdentityRoleClaim<string> {
+          Id = 6,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.INSTRUCTOR_READ,
+          RoleId = adminId,
+        },
+        new IdentityRoleClaim<string> {
+          Id = 7,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.INSTRUCTOR_UPDATE,
+          RoleId = adminId,
+        },
+        new IdentityRoleClaim<string> {
+          Id = 8,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.COMENTARIO_READ,
+          RoleId = adminId,
+        },
+        new IdentityRoleClaim<string> {
+          Id = 9,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.COMENTARIO_DELETE,
+          RoleId = adminId,
+        },
+        new IdentityRoleClaim<string> {
+          Id = 10,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.COMENTARIO_CREATE,
+          RoleId = adminId,
+        },
+        new IdentityRoleClaim<string> {
+          Id = 11,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.CURSO_READ,
+          RoleId = clientId,
+        },
+        new IdentityRoleClaim<string> {
+          Id = 12,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.INSTRUCTOR_READ,
+          RoleId = clientId,
+        },
+        new IdentityRoleClaim<string> {
+          Id = 13,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.COMENTARIO_READ,
+          RoleId = clientId,
+        },
+        new IdentityRoleClaim<string> {
+          Id = 14,
+          ClaimType = CustomClaims.POLICIES,
+          ClaimValue = PolicyMaster.COMENTARIO_CREATE,
+          RoleId = clientId,
+        }
+      );
+  }
+
+  private Tuple<Curso[], Precio[], Instructor[]> DataMaster()
   {
     var cursos = new List<Curso>();
     var faker = new Faker();
