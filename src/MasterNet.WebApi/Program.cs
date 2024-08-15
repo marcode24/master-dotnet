@@ -1,5 +1,6 @@
 using MasterNet.Application;
 using MasterNet.Persistence;
+using MasterNet.WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+await app.SeedDataAuthentication();
+
 // app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
