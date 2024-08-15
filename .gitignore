@@ -371,3 +371,6 @@ appsettings.*.json
 
 # Ignore database files created by Docker
 containers/
+
+# Ignore data files created by ef core
+*.db
