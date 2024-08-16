@@ -1,3 +1,6 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MasterNet.Application.Cursos.CursoCreate;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MasterNet.Application;
@@ -10,6 +13,10 @@ public static class DependencyInjection
     {
       configuration.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
     });
+
+    services.AddFluentValidationAutoValidation();
+    // solo se necesita agregar un comando para que se registren todos los validadores
+    services.AddValidatorsFromAssemblyContaining<CursoCreateCommand>();
 
     return services;
   }

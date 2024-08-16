@@ -1,3 +1,4 @@
+using FluentValidation;
 using MasterNet.Application.Core;
 using MasterNet.Domain;
 using MasterNet.Persistence;
@@ -7,7 +8,7 @@ namespace MasterNet.Application.Cursos.CursoCreate;
 
 public class CursoCreateCommand
 {
-  public record CursoCreateCommandRequest(CursoCreateRequest cursoCreateRequest) : IRequest<Result<Guid>>;
+  public record CursoCreateCommandRequest(CursoCreateRequest CursoCreateRequest) : IRequest<Result<Guid>>;
   internal class CursoCreateCommandHandler : IRequestHandler<CursoCreateCommandRequest, Result<Guid>>
   {
     private readonly MasterNetDbContext _context;
@@ -22,9 +23,9 @@ public class CursoCreateCommand
       var curso = new Curso
       {
         Id = Guid.NewGuid(),
-        Titulo = request.cursoCreateRequest.Titulo,
-        Descripcion = request.cursoCreateRequest.Descripcion,
-        FechaPublicacion = request.cursoCreateRequest.FechaPublicacion,
+        Titulo = request.CursoCreateRequest.Titulo,
+        Descripcion = request.CursoCreateRequest.Descripcion,
+        FechaPublicacion = request.CursoCreateRequest.FechaPublicacion,
       };
 
       _context.Cursos.Add(curso);
@@ -33,6 +34,15 @@ public class CursoCreateCommand
       return resultado
         ? Result<Guid>.Success(curso.Id)
         : Result<Guid>.Failure("No se pudo crear el curso");
+    }
+  }
+
+  public class CursoCreateCommandRequestValidator : AbstractValidator<CursoCreateCommandRequest>
+  {
+    public CursoCreateCommandRequestValidator()
+    {
+      RuleFor(x => x.CursoCreateRequest)
+        .SetValidator(new CursoCreateValidator());
     }
   }
 }
