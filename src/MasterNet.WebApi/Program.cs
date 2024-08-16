@@ -4,6 +4,7 @@ using MasterNet.Infrastructure.Reports;
 using MasterNet.Persistence;
 using MasterNet.Persistence.Models;
 using MasterNet.WebApi.Extensions;
+using MasterNet.WebApi.Middleware;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,8 @@ builder.Services.AddIdentityCore<AppUser>(options =>
 }).AddRoles<IdentityRole>().AddEntityFrameworkStores<MasterNetDbContext>();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
