@@ -55,7 +55,6 @@ public class MasterNetDbContext : IdentityDbContext<AppUser>
       .HasMany(m => m.Photos)
       .WithOne(m => m.Curso)
       .HasForeignKey(m => m.CursoId)
-      .IsRequired()
       .OnDelete(DeleteBehavior.Cascade); // Si se borra un curso, se borran las fotos
 
     modelBuilder.Entity<Curso>()
@@ -266,7 +265,7 @@ public class MasterNetDbContext : IdentityDbContext<AppUser>
     var fakerInstructor = new Faker<Instructor>()
       .RuleFor(t => t.Id, _ => Guid.NewGuid())
       .RuleFor(t => t.Nombre, f => f.Name.FullName())
-      .RuleFor(t => t.Apeliidos, f => f.Name.LastName())
+      .RuleFor(t => t.Apellidos, f => f.Name.LastName())
       .RuleFor(t => t.Grado, f => f.Name.JobTitle());
 
     var instructores = fakerInstructor.Generate(10);

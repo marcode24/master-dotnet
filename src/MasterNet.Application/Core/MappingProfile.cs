@@ -17,7 +17,7 @@ public class MappingProfile : Profile
     CreateMap<Precio, PrecioResponse>();
 
     CreateMap<Instructor, InstructorResponse>()
-      .ForMember(dest => dest.Apellido, src => src.MapFrom(doc => doc.Apeliidos));
+      .ForMember(dest => dest.Apellido, src => src.MapFrom(doc => doc.Apellidos));
 
     CreateMap<Calificacion, CalificacionResponse>()
       .ForMember(dest => dest.NombreCurso, src => src.MapFrom(doc => doc.Curso!.Titulo));
