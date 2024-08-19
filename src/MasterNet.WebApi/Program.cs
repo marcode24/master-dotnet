@@ -22,8 +22,10 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// builder.Services.AddEndpointsApiExplorer();
+// builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerDocumentation();
 
 var app = builder.Build();
 
@@ -31,8 +33,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerDocumentation();
 }
 
 app.UseAuthentication();

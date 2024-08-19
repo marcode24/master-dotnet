@@ -3,6 +3,7 @@ using MasterNet.Application.Cursos.CursoCreate;
 using MasterNet.Application.Cursos.CursoUpdate;
 using MasterNet.Application.Cursos.GetCursos;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Cursos.CursoCreate.CursoCreateCommand;
 using static MasterNet.Application.Cursos.CursoDelete.CursoDeleteCommand;
@@ -14,6 +15,7 @@ using static MasterNet.Application.Cursos.GetCursos.GetCursosQuery;
 namespace MasterNet.WebApi.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/cursos")]
 public class CursosController : ControllerBase
 {
