@@ -1,9 +1,11 @@
 using MasterNet.Application.Accounts;
 using MasterNet.Application.Accounts.Login;
+using MasterNet.Application.Accounts.Register;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Accounts.Login.LoginCommand;
+using static MasterNet.Application.Accounts.Register.RegisterCommand;
 
 namespace MasterNet.WebApi.Controllers;
 
@@ -28,5 +30,17 @@ public class AccountController : ControllerBase
     return resultado.IsSuccess
       ? Ok(resultado.Value)
       : Unauthorized(resultado.Error);
+  }
+
+  [AllowAnonymous]
+  [HttpPost("register")]
+  [ProducesResponseType(StatusCodes.Status200OK)]
+  public async Task<ActionResult<Profile>> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
+  {
+    var command = new RegisterCommandRequest(request);
+    var resultado = await _sender.Send(command, cancellationToken);
+    return resultado.IsSuccess
+      ? Ok(resultado.Value)
+      : BadRequest(resultado.Error);
   }
 }
