@@ -5,6 +5,7 @@ using MasterNet.Application.Cursos.GetCursos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Cursos.CursoCreate.CursoCreateCommand;
+using static MasterNet.Application.Cursos.CursoDelete.CursoDeleteCommand;
 using static MasterNet.Application.Cursos.CursoReporteExcel.CursoReporteExcelQuery;
 using static MasterNet.Application.Cursos.CursoUpdate.CursoUpdateCommand;
 using static MasterNet.Application.Cursos.GetCurso.GetCursoQuery;
@@ -66,6 +67,15 @@ public class CursosController : ControllerBase
     byte[] excelBytes = result.ToArray();
 
     return File(excelBytes, "text/csv", "cursos.csv");
+  }
+
+  [HttpDelete("{id}")]
+  public async Task<ActionResult<Result<Unit>>> CursoDelete(Guid id, CancellationToken cancellationToken)
+  {
+    var command = new CursoDeleteCommandRequest(id);
+    var result = await _sender.Send(command, cancellationToken);
+
+    return result.IsSuccess ? Ok(result.Value) : NotFound();
   }
 
 }
