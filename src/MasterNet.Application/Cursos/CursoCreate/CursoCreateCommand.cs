@@ -4,6 +4,8 @@ using MasterNet.Application.Interfaces;
 using MasterNet.Domain;
 using MasterNet.Persistence;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MasterNet.Application.Cursos.CursoCreate;
 
@@ -44,6 +46,24 @@ public class CursoCreateCommand
         };
 
         curso.Photos = new List<Photo> { photo };
+      }
+
+      if (request.CursoCreateRequest.InstructorId is not null)
+      {
+        var instructor = await _context.Instructores.FirstOrDefaultAsync(x => x.Id == request.CursoCreateRequest.InstructorId, cancellationToken: cancellationToken);
+        if (instructor is null)
+          return Result<Guid>.Failure("Instructor no encontrado");
+
+        curso.Instructores = new List<Instructor> { instructor };
+      }
+
+      if (request.CursoCreateRequest.PrecioId is not null)
+      {
+        var precio = await _context.Precios.FirstOrDefaultAsync(x => x.Id == request.CursoCreateRequest.PrecioId, cancellationToken: cancellationToken);
+        if (precio is null)
+          return Result<Guid>.Failure("Precio no encontrado");
+
+        curso.Precios = new List<Precio> { precio };
       }
 
       _context.Cursos.Add(curso);

@@ -1,10 +1,12 @@
 using MasterNet.Application.Core;
 using MasterNet.Application.Cursos.CursoCreate;
+using MasterNet.Application.Cursos.CursoUpdate;
 using MasterNet.Application.Cursos.GetCursos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Cursos.CursoCreate.CursoCreateCommand;
 using static MasterNet.Application.Cursos.CursoReporteExcel.CursoReporteExcelQuery;
+using static MasterNet.Application.Cursos.CursoUpdate.CursoUpdateCommand;
 using static MasterNet.Application.Cursos.GetCurso.GetCursoQuery;
 using static MasterNet.Application.Cursos.GetCursos.GetCursosQuery;
 
@@ -36,6 +38,15 @@ public class CursosController : ControllerBase
     var command = new CursoCreateCommandRequest(cursoCreateRequest);
 
     return await _sender.Send(command, cancellationToken);
+  }
+
+  [HttpPut("{id}")]
+  public async Task<ActionResult<Result<Guid>>> CursoUpdate(Guid id, [FromBody] CursoUpdateRequest cursoUpdateRequest, CancellationToken cancellationToken)
+  {
+    var command = new CursoUpdateCommandRequest(cursoUpdateRequest, id);
+    var result = await _sender.Send(command, cancellationToken);
+
+    return result.IsSuccess ? Ok(result.Value) : NotFound();
   }
 
   [HttpGet("{id}")]
