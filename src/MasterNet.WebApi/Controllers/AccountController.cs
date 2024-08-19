@@ -1,6 +1,7 @@
 using MasterNet.Application.Accounts;
 using MasterNet.Application.Accounts.Login;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Accounts.Login.LoginCommand;
 
@@ -17,6 +18,7 @@ public class AccountController : ControllerBase
     _sender = sender;
   }
 
+  [AllowAnonymous]
   [HttpPost("login")]
   [ProducesResponseType(StatusCodes.Status200OK)]
   public async Task<ActionResult<Profile>> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)

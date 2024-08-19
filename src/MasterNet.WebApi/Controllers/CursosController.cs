@@ -2,6 +2,7 @@ using MasterNet.Application.Core;
 using MasterNet.Application.Cursos.CursoCreate;
 using MasterNet.Application.Cursos.CursoUpdate;
 using MasterNet.Application.Cursos.GetCursos;
+using MasterNet.Domain;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,7 @@ public class CursosController : ControllerBase
     _sender = sender;
   }
 
+  [AllowAnonymous]
   [HttpGet]
   public async Task<ActionResult> PaginationCursos([FromQuery] GetCursosRequest request, CancellationToken cancellationToken)
   {
@@ -35,6 +37,7 @@ public class CursosController : ControllerBase
     return result.IsSuccess ? Ok(result.Value) : NotFound();
   }
 
+  [Authorize(Policy = PolicyMaster.CURSO_WRITE)]
   [HttpPost("create")]
   public async Task<ActionResult<Result<Guid>>> CursoCreate([FromForm] CursoCreateRequest cursoCreateRequest, CancellationToken cancellationToken)
   {
@@ -44,6 +47,7 @@ public class CursosController : ControllerBase
   }
 
   [HttpPut("{id}")]
+  [Authorize(Policy = PolicyMaster.CURSO_UPDATE)]
   public async Task<ActionResult<Result<Guid>>> CursoUpdate(Guid id, [FromBody] CursoUpdateRequest cursoUpdateRequest, CancellationToken cancellationToken)
   {
     var command = new CursoUpdateCommandRequest(cursoUpdateRequest, id);
@@ -71,7 +75,9 @@ public class CursosController : ControllerBase
     return File(excelBytes, "text/csv", "cursos.csv");
   }
 
+
   [HttpDelete("{id}")]
+  [Authorize(Policy = PolicyMaster.CURSO_DELETE)]
   public async Task<ActionResult<Result<Unit>>> CursoDelete(Guid id, CancellationToken cancellationToken)
   {
     var command = new CursoDeleteCommandRequest(id);

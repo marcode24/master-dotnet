@@ -1,5 +1,6 @@
 using MasterNet.Application.Precios.GetPrecios;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static MasterNet.Application.Precios.GetPrecios.GetPreciosQuery;
 
@@ -16,6 +17,7 @@ public class PreciosController : ControllerBase
     _sender = sender;
   }
 
+  [AllowAnonymous]
   [HttpGet]
   public async Task<IActionResult> PaginationPrecios([FromQuery] GetPreciosRequest request, CancellationToken cancellationToken)
   {
