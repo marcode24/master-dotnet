@@ -28,17 +28,30 @@ builder.Services.AddControllers();
 
 builder.Services.AddSwaggerDocumentation();
 
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy("CorsPolicy", policy =>
+  {
+    policy
+      .AllowAnyHeader()
+      .AllowAnyMethod()
+      .WithOrigins("http://localhost:3000");
+  });
+});
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwaggerDocumentation();
+  app.UseSwaggerDocumentation();
 }
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCors("CorsPolicy");
 
 await app.SeedDataAuthentication();
 
