@@ -1,9 +1,12 @@
 using MasterNet.Application.Accounts;
+using MasterNet.Application.Accounts.GetCurrentUser;
 using MasterNet.Application.Accounts.Login;
 using MasterNet.Application.Accounts.Register;
+using MasterNet.Application.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static MasterNet.Application.Accounts.GetCurrentUser.GetCurrentUserQuery;
 using static MasterNet.Application.Accounts.Login.LoginCommand;
 using static MasterNet.Application.Accounts.Register.RegisterCommand;
 
@@ -14,10 +17,12 @@ namespace MasterNet.WebApi.Controllers;
 public class AccountController : ControllerBase
 {
   private readonly ISender _sender;
+  private readonly IUserAccesor _userAccesor;
 
-  public AccountController(ISender sender)
+  public AccountController(ISender sender, IUserAccesor userAccesor)
   {
     _sender = sender;
+    _userAccesor = userAccesor;
   }
 
   [AllowAnonymous]
@@ -42,5 +47,19 @@ public class AccountController : ControllerBase
     return resultado.IsSuccess
       ? Ok(resultado.Value)
       : BadRequest(resultado.Error);
+  }
+
+  [HttpGet("me")]
+  [ProducesResponseType(StatusCodes.Status200OK)]
+  public async Task<ActionResult<Profile>> Me(CancellationToken cancellationToken)
+  {
+    var email = _userAccesor.GetEmail();
+    var request = new GetCurrentUserRequest(email);
+    var query = new GetCurrentUserQueryRequest(request);
+    var resultado = await _sender.Send(query, cancellationToken);
+
+    return resultado.IsSuccess
+      ? Ok(resultado.Value)
+      : NotFound(resultado.Error);
   }
 }
