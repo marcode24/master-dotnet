@@ -15,7 +15,12 @@ public class CursoUpdateValidator : AbstractValidator<CursoUpdateRequest>
       .WithMessage("La descripción es requerida");
 
     RuleFor(x => x.FechaPublicacion)
-      .NotEmpty()
+      .Must(ValidateDateTime)
       .WithMessage("La fecha de publicación es requerida");
+  }
+
+  private bool ValidateDateTime(DateTime fecha)
+  {
+    return !fecha.Equals(default);
   }
 }

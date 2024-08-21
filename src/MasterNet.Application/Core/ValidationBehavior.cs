@@ -29,6 +29,9 @@ public sealed class ValidationBehavior<TRequest, TResponse>
       ))
       .ToList();
 
+    if (errors.Count != 0)
+      throw new ValidationException(errors);
 
+    return await next();
   }
 }
