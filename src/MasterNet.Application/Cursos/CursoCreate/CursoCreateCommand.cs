@@ -11,7 +11,7 @@ namespace MasterNet.Application.Cursos.CursoCreate;
 
 public class CursoCreateCommand
 {
-  public record CursoCreateCommandRequest(CursoCreateRequest CursoCreateRequest) : IRequest<Result<Guid>>;
+  public record CursoCreateCommandRequest(CursoCreateRequest CursoCreateRequest) : IRequest<Result<Guid>>, ICommandBase;
   internal class CursoCreateCommandHandler : IRequestHandler<CursoCreateCommandRequest, Result<Guid>>
   {
     private readonly MasterNetDbContext _context;
